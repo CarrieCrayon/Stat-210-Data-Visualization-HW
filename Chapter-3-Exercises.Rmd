@@ -1,0 +1,358 @@
+---
+title: "Chapter 3"
+author: "Carrie Bloom"
+date: "9/21/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages, include=FALSE}
+library(tidyverse)
+```
+
+##3.24 Exercises
+###Question 1
+```{r}
+ggplot(data=mpg)
+```
+The above code provides me with...nothing. Initially, I thought I had done something wrong. I realized, however, that the code includes none of the aesthetics. It's just preperation.    
+  
+###Question 2
+```{r}
+ncol(mpg)
+nrow(mpg)
+```
+
+The "mpg" dataset contains 11 columns and 234 rows of data.   
+
+###Question 3
+```{r}
+?mpg
+```
+The "drv" variable describes the type of drive (f=front-wheel drive, r=rear wheel drive, 4=4wd)  
+
+###Question 4
+```{r}
+ggplot(data=mpg) +
+  geom_point(mapping = aes(x=hwy, y=cyl))
+```
+
+###Question 5
+```{r}
+ggplot(data=mpg) +
+  geom_point(mapping = aes(x=class, y=drv))
+```
+A scatterplot is not useful when comparing "class" and "drv" since they are both categorical variables with no notable correlation.
+
+##3.3.1 Exercises 
+###Question 1
+```{r}
+ggplot(data=mpg) +
+  geom_point(mapping = aes(x=displ, y=hwy, color="blue"))
+```
+
+Since the color blue does not apply to one specific variable but rather the WHOLE plot, it should be placed outside the "aes" portion. Err...like so:
+```{r}
+ggplot(data=mpg) +
+  geom_point(mapping = aes(x=displ, y=hwy), color="blue")
+```
+
+###Question 2
+```{r}
+?mpg
+head(mpg)
+```
+For the "mpg" data set...  
+categorical var: "manufacturer", "model", "year", "cyl", "trans", "drv", "fl", "class"  
+continuous var: "hwy", "cty", "displ" 
+
+###Question 3: 
+Mapping aesthetics to CATEGORICAL variables:
+```{r}
+ggplot(data=mpg) +
+  geom_point(mapping = aes(x=displ, y=hwy, color=fl))
+ggplot(data=mpg) +
+  geom_point(mapping = aes(x=displ, y=hwy, shape=drv))
+ggplot(data=mpg) +
+  geom_point(mapping = aes(x=displ, y=hwy, size=class))
+```
+Mapping aesthetics to CONTINUOUS variables:
+```{r}
+ggplot(data=mpg) +
+  geom_point(mapping = aes(x=displ, y=hwy, color=cty))
+ggplot(data=mpg) +
+  geom_point(mapping = aes(x=displ, y=hwy, size=cty))
+```
+From the above code chunks, we see a few differences between mapping categorical variables versus mapping continuous variables. Most notably, R will not allow us to map continuous variables to shapes, and it advises that we shouldn't map categorical variables to sizes. In terms of mapping color, the catgorical variables are mapped to a rather, well, categorical palette. On the other hand, continous variables are mapped to a monochromatic/analagous palette.
+
+###Question 4:
+```{r}
+ggplot(data=mpg) +
+  geom_point(mapping = aes(x=displ, y=hwy, color=drv, shape=drv))
+```
+Uneventfully, mapping the same variable to multiple aesthetics...does just that! Your variable is mapped to multiple aesthetics! I don't know how else to describe it.
+
+###Question 5:
+```{r}
+?geom_point
+ggplot(data=mpg) +
+  geom_point(mapping = aes(x=displ, y=hwy), shape=21, color="purple", fill="white", stroke=2)
+```
+The "stroke" aesthetic changes the size of the shape's border (that is, if the shape has a border)
+
+###Question 6
+```{r}
+ggplot(data=mpg) +
+  geom_point(mapping = aes(x=cty, y=hwy, colour = displ < 5))
+```
+
+I suppose it acts like a categorical mapping; the TRUE statements are one category, and the FALSE statements are another.
+
+##3.5.1 Exercises
+###Question 1
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ cty, nrow = 3)
+```
+
+Ewww! Facet mapping on a continuous variable gives you too many graphs. Imagine if the continous variables were even more varied in this data set??? Ew, ew, ew!
+
+###Question 2
+```{r}
+ggplot(data = mpg) + 
+  facet_grid(drv ~ cyl)
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = drv, y = cyl))
+```
+
+Okay, the facet_grid creates subplots of each drv x each cyl. The geom_plot has the same drv x cyl set-up, but it actually has their intersection points has well! (Okay, that was badly worded, but trust me! I understand the point that was trying to be made).
+
+###Question 3
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(cyl ~ .)
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(. ~ cyl)
+```
+The "." code makes it so the x or y axis is reapeated in every facet. In other words, we see how the coordinates compare within each facet alone, rather than amongst all facets. I think it's visual comparison sake? Again, I'm very bad at explaining these things.
+
+###Question 4
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ class, nrow = 2)
+```
+With faceting, it's easier to visualize the trends WITHIN each category. With color mapping, however, it's easier to visualize the trends BETWEEN each category. Faceting is better for studying the categories as individual beings; color mapping is better for studying all the categories as one whole being. Ugh, why is it so hard to verbalize these things???????
+
+###Question 5
+```{r}
+?facet_wrap
+```
+The ncol and nrow determine the dimensions of the entire collection of subplots. For example, the previous graph has nrow=2 and ncol=4. Facet grid is one plot divided (AKA: one, shared axis), whereas facet wrap is a collection of subplots (AKA: axes that AREN'T shared). Thus, with facet_grid, there aren't multiple plots the organize.
+
+###Question 6
+What
+
+
+##3.6.1 Exercises
+###Question 1
+Line geoms (i.e. geom_line()) would be use to draw line charts. "geom_boxplot"" would be used for boxplots. "geom_histogram" would be used for historgrams."geom_area" would be used for area charts.
+
+###Question 2
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
+  geom_point() + 
+  geom_smooth(se = FALSE)
+
+```
+Before looking at this code's output, I imagined it would be dot plot displaying the trend between displ and hwy. The estimated curve of the points' trend would be represented by a line; the points would be color coded by their "drv". Looking at the output, the lines detail the trajectory of the points for each "drv" group, rather than the entire graph.
+
+###Question 3
+```{r}
+ggplot(data = mpg) +
+  geom_smooth(mapping = aes(x = displ, y = hwy, color = drv))
+
+ggplot(data = mpg) +
+  geom_smooth(mapping = aes(x = displ, y = hwy, color = drv), show.legend = FALSE)
+```
+"show.legend = FALSE"...hides the legend. Removing that code...shows the legend! The legend labels the meanings behind the shape, color, etc. mapping you used to classify certain points. It's all pretty self-explanatory, to be honest.
+
+###Question 4
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(mapping = aes(color = class)) + 
+  geom_smooth(data = filter(mpg, class == "subcompact"), se = FALSE)
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(mapping = aes(color = class)) + 
+  geom_smooth(data = filter(mpg, class == "subcompact"))
+```
+The "se" argument refers to the standard error of the fitted line estimation.
+
+###Question 5
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  geom_smooth()
+
+ggplot() + 
+  geom_point(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_smooth(data = mpg, mapping = aes(x = displ, y = hwy))
+```
+The two graphs do not look different. Any aesthetics within the "ggplot()" function applies to the entire graph.
+
+###Question 6
+```{r}
+
+```
+
+##3.7.1 Exercises
+###Question 1
+```{r}
+ggplot(data = diamonds) + 
+  stat_summary(
+    mapping = aes(x = cut, y = depth),
+    fun.ymin = min,
+    fun.ymax = max,
+    fun.y = median
+  )
+```
+That "stat_summary()" function seems to resemble the pointrange geom. Anyway, here's the recreation! (I admit, I found what code would recreate the graph through stackoverflow):
+```{r}
+?geom_point
+
+ggplot(data=diamonds) +
+  geom_pointrange( 
+    mapping = aes(x=cut, y=depth), 
+    stat="summary",
+    fun.ymin = min,
+    fun.ymax = max,
+    fun.y = median
+  )
+```
+
+###Question 2
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_col()
+
+ggplot(data = mpg, mapping = aes(x = displ)) + 
+  geom_bar()
+```
+"geom_bar" maps SOLELY an X VARIABLE. "geom_col" requires both and x variable and a Y VARIABLE. 
+
+###Question 3
+Uhh...
+
+###Question 4
+```{r}
+?stat_smooth()
+```
+Well...okay. Apparently "stat_smooth()" is essentially the same thing as "geom_smooth()", BUT "stat_smooth()" is for more peculiar cases? The help section states "Use geom_smooth unless you want to display the results with a non-standard geom." "stat_smooth()" includes some arguments "geom_smooth()" does not. For example..."n", "span", "fullrange", "level", "method.args". 
+
+###Question 5
+```{r}
+?geom_bar
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = ..prop..))
+```
+Okay, so I don't quite understand the technicalities behind "..prop.." and "group=1", and all that jazz. What I do understand is that without the "group=1" aesthetic, the bars aren't ACTUALLY sized accordingly to their proportions. 
+
+```{r}
+library(viridisLite)
+ggplot(data = diamonds) + 
+   geom_bar(mapping = aes(x = cut, fill=color, y = ..prop..))
+```
+In order for the above code to ACTUALLY load, I had to install the "viridisLite" package. What we've received was, err...that? Also, "proportions" are no longer proportions. I have more questions, now. Either way, the bars are still unproportioned, so I suppose that's all that matters!
+
+```{r}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill=color, y = ..prop.., group=1))
+```
+Well, would you look at that! With "group=1", The bars are correctly proportioned! The "fill=color" has no effect, however. Why is that? It's all so confusing!
+
+
+##3.8.1 Exercises
+###Question 1
+```{r}
+head(mpg)
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_point()
+```
+Since many cty/hwy combinations repeat throughout the data, many of these points will overlap in the graph. Thus, despite there being 234 observations, there seems to be WAY fewer on the graph. If we apply the "position="jitter"" aesthetic, the actual number of observations become more apparent:
+```{r}
+ggplot(data = mpg) + 
+  geom_point( mapping = aes(x = cty, y = hwy), position="jitter")
+```
+
+
+###Question 2
+```{r}
+?geom_jitter()
+```
+The "width" and "height" arguments adjusst the amount of horizontal and vertical jitter, respectively.
+
+###Question 3
+```{r}
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_point()
+
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_count()
+
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_jitter()
+```
+"geom_count" is similar to "geom_jitter" in that they both call attention to points that would have otherwise been overlapped (if using geom_point). While "geom_jitter" spreads the points out so you can see them individualy, "geom_count" increases the size for each overlapped point.
+
+###Question 4
+```{r}
+?geom_boxplot()
+
+ggplot(data = mpg, mapping = aes(x = drv, y = hwy)) + 
+  geom_boxplot()
+```
+Looking at the "?geom_boxplot()" help window, the default position for "geom_boxplot()" is dodge. Admittedly, I can't find the correct aesthetics that makes this fact especially apparent... 
+
+##3.9.1 Exercises
+###Question 1
+```{r}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity), position = "fill") +
+  theme(aspect.ratio = 1) +
+  labs(x = NULL, y = NULL) +
+  coord_polar()
+```
+
+###Question 2
+```{r}
+?labs()
+```
+labs() controls the labels such as plot titles, axis labls, captions, etc.
+
+###Question 3
+```{r}
+?coord_quickmap()
+?coor_map()
+```
+While both provide approximate "projections" of the earth, coord_map() accounts for the spheical shape of the earth and presents the map with curved lines to account for this. coord_quickmap(), on the other hand, is a quick estimation and keeps its log/lat lines straight.
+
+###Question 4
+```{r}
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+  geom_point() + 
+  geom_abline() +
+  coord_fixed()
+
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+  geom_point() + 
+  geom_abline()
+```
+There seems to be a positive correlation between cty and hwy. coord_fixed makes it so both axes are evenly spaced out. Personallt, I think it more accurately illustrates how one cty value relates to one hwy value. It's more...dramatic? Err, I don't know how to explain it. geom_abline() draws the estimate regression/slope line; thus, we can better visualize the trend.
